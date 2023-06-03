@@ -11,8 +11,8 @@ using namespace std::chrono;
 
 // params
 char leaf = '@';
-char layers = 4;
-char stem = 3;
+int layers = 4;
+int stem = 3;
 const float leafdecay = 0.25F;
 const float leafgradient = 0.0625F;
 
@@ -26,13 +26,13 @@ char legacy_output[legacy_layers+1][2*legacy_horiz_offset+1];
 char legacy_legacy_layershape[legacy_layers][1<<legacy_layers];
 char legacy_layerpos[legacy_layers][1<<legacy_layers];
 
-
 // pick direction for branch
 char Rdir() { return (char)(3*(float)rand()/RAND_MAX)-1; }
 char c2n(char c, int fallback) {if (c>='0'&&c<='9') { return c-'0'; } return fallback; }
 
 /* legacy behavior */
-void legacy(int argc, char *argv[]) {
+void legacy(int argc, char *argv[])
+{
   if (argc>=2) leaf = argv[1][0];
   for (unsigned char i=0;i<legacy_layers;++i) for (unsigned char j=0;j<(1<<i);++j) {
     legacy_legacy_layershape[i][j]=Rdir();
@@ -42,7 +42,7 @@ void legacy(int argc, char *argv[]) {
   for (unsigned char i=0;i<legacy_layers;++i) for (unsigned char j=0;j<(1<<i);++j) {
       legacy_output[i][legacy_layerpos[i][j]]=branch[legacy_legacy_layershape[i][j]+1];
       for (char x=-2;x<=2;++x) for (unsigned char y=0;y<=1;++y)
-          if (!(std::abs(x)==2&y==1)&&!(x==0&y==0)&&(float)rand()/RAND_MAX>leafdecay)
+          if (!(std::abs(x)==2&&y==1)&&!(x==0&&y==0)&&(float)rand()/RAND_MAX>leafdecay)
             legacy_output[i+y][legacy_layerpos[i][j]+x]=leaf;
   }
   for (char i=legacy_layers+1;i>=0;--i) std::cout << legacy_output[i] << std::endl;
@@ -52,17 +52,28 @@ void legacy(int argc, char *argv[]) {
   }
 }
 
-/* main routine */
+/* main behavior */
 int main(int argc, char *argv[])
 {
-  // set seed and leaf
+  // set seed
   srand(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
-  if (argc>=3) if (string(argv[2])==string("--legacy")) {legacy(argc,argv); return 0; }// legacy behavior flag
+  
+  // legacy behavior flag
+  if (argc>=3 && string(argv[2])==string("--legacy")) {
+      legacy(argc,argv);
+      return 0;
+  } else if (argc==2 && string(argv[1])==string("--legacy")) {
+      legacy(1,argv);
+      return 0;
+  }
+  
   if (argc>=2) {
+    // help flag
     if (string(argv[1])==string("-h")||string(argv[1])==string("--help")||string(argv[1])==string("-?")||string(argv[1])==string("/?")) {
         std::cout << string("Usage: ")+string(argv[0])+string(" [X][Y][Z] [--legacy]\n  X sets leaf letter (default @)\n  Y sets layer count (@ for default=4)\n  Z sets stem length (@ for default=3)") << std::endl;
         return 0;
     }
+    // tree prarams
     if (argv[1][0]!='@') { leaf = argv[1][0]; }
     if (argv[1][1]!='@') { layers = c2n(argv[1][1],layers); }
     if (argv[1][2]!='@') { stem = c2n(argv[1][2],stem); }
@@ -86,7 +97,7 @@ int main(int argc, char *argv[])
       output[i][layerpos[i][j]]=branch[layershape[i][j]+1];
       for (char x=-2;x<=2;++x)
         for (unsigned char y=0;y<=1;++y)
-          if (!(std::abs(x)==2&y==1)&&!(x==0&y==0)&&(float)rand()/RAND_MAX<(i+y)*leafgradient/layers+leafdecay)
+          if (!(std::abs(x)==2&&y==1)&&!(x==0&&y==0)&&(float)rand()/RAND_MAX<(i+y)*leafgradient/layers+leafdecay)
             output[i+y][layerpos[i][j]+x]=leaf;
   }
 
