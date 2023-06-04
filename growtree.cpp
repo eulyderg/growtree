@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
   const int output_h = layers + 1;
   
   char output[output_h][output_w];
-  /// TODO: dont waste half of the allocated memory on literally nothing
+  /* TODO: dont waste half of the allocated memory on literally nothing */
   int layershape[layers][1<<layers];
   int layerpos[layers][1<<layers];
   
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
         // fill branch
         output[i][layerpos[i][j]] = BRANCHES[layershape[i][j]+1];
         
-        ///TODO: implement leaf grain
+        /* TODO: implement leaf grain */
         // fill leaves
         for (char x=-2; x<=2; ++x) {
           for (char y=0; y<=1; ++y) {
