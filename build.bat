@@ -1,2 +1,2 @@
 @echo off
-g++ growtree.cpp -o growtree.exe
+g++ growtree.cpp -O2 -o growtree.exe

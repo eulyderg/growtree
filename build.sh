@@ -1,1 +1,1 @@
-g++ growtree.cpp -o growtree.out
+g++ growtree.cpp -O2 -o growtree.out
