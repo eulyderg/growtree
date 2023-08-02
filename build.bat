@@ -1,2 +1,2 @@
 @echo off
-g++ growtree.cpp -O2 -o growtree.exe
+g++ growtree.cpp -std=c++20 -pedantic -Werror -Wall -Wextra -O3 -o growtree.exe
